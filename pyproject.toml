@@ -1,0 +1,10 @@
+[project]
+name = "exa-data-eng-assessment"
+version = "0.1.0"
+description = "Process FHIR data into queryable format"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fhir-resources>=8.1.0",
+    "ruff>=0.14.3",
+]
