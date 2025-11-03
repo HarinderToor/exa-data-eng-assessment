@@ -1,19 +1,26 @@
 services:
-  web:
-    build: .
-    develop:
-      # Create a `watch` configuration to update the app
-      # https://docs.docker.com/compose/file-watch/#compose-watch-versus-bind-mounts
-      watch:
-        # Sync the working directory with the `/app` directory in the container
-        - action: sync
-          path: .
-          target: /app
-          # Exclude the project virtual environment — it could be for a
-          # different platform in the container
-          ignore:
-            - .venv/
+  mysql:
+    image: mysql:8.4
+    container_name: mysql
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
 
-        # Rebuild the image if dependencies change by checking uv.lock
-        - action: rebuild
-          path: ./uv.lock
+  fhir-etl:
+    build: .
+    container_name: fhir-processor
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    ports:
+      - "8080:8080"
+    command: >
+      sh -c "uv run src/main.py"
+
+volumes:
+  mysql_data:
