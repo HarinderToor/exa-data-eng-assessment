@@ -1,7 +1,7 @@
 import json
 
 from fhir.resources.patient import Patient as FhirPatient
-from models.patient import Patient
+from src.models.patient import Patient
 from sqlalchemy.orm import Session
 
 

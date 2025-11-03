@@ -8,6 +8,7 @@ dependencies = [
     "dotenv>=0.9.9",
     "fhir-resources>=8.1.0",
     "mysqlclient>=2.2.7",
+    "pytest>=8.4.2",
     "ruff>=0.14.3",
     "sqlalchemy>=2.0.44",
 ]
