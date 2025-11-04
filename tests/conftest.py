@@ -5,7 +5,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from src.models.patient import Base
+from src.models import Base
 
 
 @pytest.fixture(scope="session")
@@ -14,6 +14,7 @@ def engine():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     return engine
+
 
 @pytest.fixture
 def db_session(engine):
@@ -32,7 +33,7 @@ def db_session(engine):
 def fake_fhir_file(tmp_path: Path):
     """
     Creates a temporary FHIR Patient JSON file that simulates a /data file.
-    Returns the file path for extract_patients().
+    Returns the file path for extractors.
     """
     fake_fhir_data = {
         "resourceType": "Bundle",
@@ -45,12 +46,44 @@ def fake_fhir_file(tmp_path: Path):
                     "name": [{"given": ["John"], "family": "Doe"}],
                     "gender": "male",
                     "birthDate": "2000-01-11",
-                    "address": [
-                        {"city": "Bristol", "state": "BRI", "country": "UK"}
-                    ],
+                    "address": [{"city": "Bristol", "state": "BRI", "country": "UK"}],
                     "telecom": [{"system": "phone", "value": "12345"}],
                 }
-            }
+            },
+            {
+                "resource": {
+                    "resourceType": "Encounter",
+                    "id": "enc-1",
+                    "subject": {"reference": "Patient/patient-1"},
+                    "class": {"code": "AMB"},
+                    "type": [{"text": "Outpatient visit"}],
+                    "period": {
+                        "start": "2020-01-01T10:00:00+00:00",
+                        "end": "2020-01-01T10:30:00+00:00",
+                    },
+                    "location": [{"location": {"display": "Clinic Room 2"}}],
+                }
+            },
+            {
+                "resource": {
+                    "resourceType": "Observation",
+                    "id": "obs-1",
+                    "subject": {"reference": "Patient/patient-1"},
+                    "code": {"coding": [{"code": "12345"}], "text": "Body temperature"},
+                    "valueQuantity": {"value": 37.2, "unit": "C"},
+                    "effectiveDateTime": "2020-01-01T10:15:00+00:00",
+                }
+            },
+            {
+                "resource": {
+                    "resourceType": "Condition",
+                    "id": "cond-1",
+                    "subject": {"reference": "Patient/patient-1"},
+                    "code": {"coding": [{"code": "A01"}], "text": "Typhoid fever"},
+                    "onsetDateTime": "2020-01-01T09:00:00+00:00",
+                    "verificationStatus": {"coding": [{"code": "confirmed"}]},
+                }
+            },
         ],
     }
 

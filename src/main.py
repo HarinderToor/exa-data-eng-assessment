@@ -2,9 +2,10 @@ import os
 
 from config import DATA_DIR
 from database import SessionLocal, init_db
-from extractors.patient import extract_patients
+from extractors import extract_resources
 
 init_db()
+
 
 def main():
     session = SessionLocal()
@@ -12,7 +13,7 @@ def main():
     for filename in os.listdir(DATA_DIR):
         if filename.endswith(".json"):
             path = os.path.join(DATA_DIR, filename)
-            extract_patients(path, session)
+            extract_resources(path, session)
     session.close()
 
 
