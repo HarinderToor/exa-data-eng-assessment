@@ -22,7 +22,7 @@ def main():
     args = parser.parse_args()
 
     fhir_files: List[str] = [
-        os.path.join(args.data_dir, f)
+        os.path.join(args.data, f)
         for f in os.listdir(DATA_DIR)
         if f.endswith(".json")
     ]
