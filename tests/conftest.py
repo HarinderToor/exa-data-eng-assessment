@@ -5,7 +5,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from src.models import Base
+from src.database import Base
 
 
 @pytest.fixture(scope="session")
@@ -30,12 +30,39 @@ def db_session(engine):
 
 
 @pytest.fixture
-def fake_fhir_file(tmp_path: Path):
+def fhir_bundle_file(tmp_path: Path):
     """
     Creates a temporary FHIR Patient JSON file that simulates a /data file.
     Returns the file path for extractors.
     """
     fake_fhir_data = {
+        "resourceType": "Bundle",
+        "type": "transaction",
+        "entry": [
+            {
+                "resource": {
+                    "resourceType": "Patient",
+                    "id": "test-patient-1",
+                    "name": [{"given": ["John"], "family": "Doe"}],
+                    "gender": "male",
+                    "birthDate": "2000-01-11",
+                    "address": [{"city": "Bristol", "state": "BRI", "country": "UK"}],
+                    "telecom": [{"system": "phone", "value": "12345"}],
+                }
+            }
+        ],
+    }
+    file_path = tmp_path / "fake_fhir_patient.json"
+    file_path.write_text(json.dumps(fake_fhir_data))
+    return str(file_path)
+
+
+@pytest.fixture
+def sample_bundle_data():
+    """
+    Creates a temporary bundle of FHIR Patient data
+    """
+    return {
         "resourceType": "Bundle",
         "type": "transaction",
         "entry": [
@@ -86,8 +113,3 @@ def fake_fhir_file(tmp_path: Path):
             },
         ],
     }
-
-    file_path = tmp_path / "fake_fhir_patient.json"
-    file_path.write_text(json.dumps(fake_fhir_data))
-
-    return str(file_path)
