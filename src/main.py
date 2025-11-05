@@ -22,9 +22,7 @@ def main():
     args = parser.parse_args()
 
     fhir_files: List[str] = [
-        os.path.join(args.data, f)
-        for f in os.listdir(DATA_DIR)
-        if f.endswith(".json")
+        os.path.join(args.data, f) for f in os.listdir(DATA_DIR) if f.endswith(".json")
     ]
     if not fhir_files:
         logging.warning(f"No FHIR files found in {DATA_DIR}")
