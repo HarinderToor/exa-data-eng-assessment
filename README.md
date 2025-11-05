@@ -43,11 +43,9 @@ $ uv run src/main.py --data /path/to/fhir/files
 To run the tests:
 
 ```console
-$ uv run pytest
+$ docker compose run --rm fhir-etl pytest
+$ uv run pytest # alternatively run tests locally with uv
 ```
-
-
-
 
 Code quality is managed by `ruff`:
 ```console
